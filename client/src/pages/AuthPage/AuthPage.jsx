@@ -3,6 +3,7 @@ import './AuthPage.scss';
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import axios from 'axios';
 
+
 const AuthPage = () => {
   const [form, setForm] = useState( {
     email: 'email',
@@ -23,6 +24,18 @@ const AuthPage = () => {
         .then(response => console.log(response));
     } catch (err) {
       console.log( err.message )
+    }
+  }
+  
+  const loginHandler = async () => {
+    try {
+      await axios.post( '/api/auth/login', { ...form }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      } ).then(response => console.log(response))
+    } catch (err) {
+      console.log(err)
     }
   }
   
@@ -59,7 +72,7 @@ const AuthPage = () => {
                     </div>
                   </div>
                   <div className="row">
-                    <button className="btn waves-effect waves-light" type="submit" name="action">Log in
+                    <button className="btn waves-effect waves-light" type="submit" name="action" onClick={loginHandler}>Log in
                     </button>
                     <Link to="/registration" className="btn-outline btn-reg">Create Account</Link>
                   </div>
