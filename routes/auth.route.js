@@ -2,6 +2,7 @@ const { Router } = require( 'express' )
 const User = require( '../models/User' )
 const router = Router()
 const { body, validationResult } = require( 'express-validator' )
+const bcrypt = require('bcryptjs')
 
 router.post( '/registration',
   [
@@ -25,8 +26,10 @@ router.post( '/registration',
         return res.status( 300 ).json( { message: 'The email is already in use' } )
       }
       
+      const hashedPassword = await bcrypt.hash(password, 12) //encrypting password before sending to db
+      
       const user = new User( {
-        email, password
+        email, password: hashedPassword
       } )
       
       res.status( 201 ).json( { message: 'User created' } )
