@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import './AuthPage.scss';
+import React, { useState, useContext } from 'react';
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import axios from 'axios';
+import { AuthContext } from "../../context/AuthContext";
+
+import './AuthPage.scss';
 
 
 const AuthPage = () => {
@@ -9,6 +11,8 @@ const AuthPage = () => {
     email: 'email',
     password: 'password'
   } )
+  
+  const { login } = useContext( AuthContext )
   
   const changeHandler = (event) => {
     setForm( { ...form, [event.target.name]: event.target.value } )
@@ -21,7 +25,7 @@ const AuthPage = () => {
           'Content-Type': 'application/json'
         }
       } )
-        .then(response => console.log(response));
+        .then( response => console.log( response ) );
     } catch (err) {
       console.log( err.message )
     }
@@ -33,9 +37,11 @@ const AuthPage = () => {
         headers: {
           'Content-Type': 'application/json'
         }
-      } ).then(response => console.log(response))
+      } ).then( response => {
+        login(response.data.token, response.data.userId)
+      } )
     } catch (err) {
-      console.log(err)
+      console.log( err )
     }
   }
   
@@ -72,7 +78,8 @@ const AuthPage = () => {
                     </div>
                   </div>
                   <div className="row">
-                    <button className="btn waves-effect waves-light" type="submit" name="action" onClick={loginHandler}>Log in
+                    <button className="btn waves-effect waves-light" type="submit" name="action"
+                            onClick={loginHandler}>Log in
                     </button>
                     <Link to="/registration" className="btn-outline btn-reg">Create Account</Link>
                   </div>
