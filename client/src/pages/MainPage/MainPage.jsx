@@ -50,7 +50,35 @@ const MainPage = () => {
     } catch (err) {
       console.log(err)
     }
-  })
+  }, [getTodo])
+  
+  const completedTodo = useCallback(async (id) => {
+    try {
+      await axios.put(`/api/todo/completed/${id}`, {id}, {
+        headers: {'Content-Type': 'application/json'}
+      })
+        .then(response => {
+          setTodos([...todos], response.data)
+          getTodo()
+        })
+    } catch (err){
+      console.log(err)
+    }
+  }, [getTodo, todos])
+  
+  const importantTodo = useCallback(async (id) => {
+    try {
+      await axios.put(`/api/todo/important/${id}`, {id}, {
+        headers: {'Content-Type': 'application/json'}
+      })
+        .then(response => {
+          setTodos([...todos], response.data)
+          getTodo()
+        })
+    } catch (err){
+      console.log(err)
+    }
+  }, [getTodo, todos])
   
   useEffect(() => {
     getTodo()
@@ -86,13 +114,23 @@ const MainPage = () => {
           {
             
             todos.map( (todo, index) => {
+              let cls = ['row flex todos-item']
+              
+              if(todo.completed) {
+                cls.push('completed')
+              }
+  
+              if(todo.important) {
+                cls.push('important')
+              }
+              
               return (
-                <div className="row flex todos-item" key={index}>
+                <div className={cls.join(' ')} key={index}>
                   <div className="col todos-num">{index + 1}</div>
                   <div className="col todos-text">{todo.text}</div>
                   <div className="todos-buttons col">
-                    <i className="material-icons teal-text">check</i>
-                    <i className="material-icons orange-text">warning</i>
+                    <i className="material-icons teal-text" onClick={() => completedTodo(todo._id)}>check</i>
+                    <i className="material-icons orange-text" onClick={() => importantTodo(todo._id)}>warning</i>
                     <i className="material-icons red-text" onClick={() => removeTodos(todo._id)}>delete</i>
                   </div>
                 </div>
