@@ -24,12 +24,21 @@ router.post( '/add', async (req, res) => {
 
 router.get( '/', async (req, res) => {
   try {
-    const {userId} = req.query
+    const { userId } = req.query
     
-    const todo = await Todo.find({owner: userId})
+    const todo = await Todo.find( { owner: userId } )
     
+    res.json( todo )
+    
+  } catch (err) {
+    console.log( err )
+  }
+} )
+
+router.delete( '/delete/:id', async (req, res) => {
+  try {
+    const todo = await Todo.findOneAndDelete({_id: req.params.id })
     res.json(todo)
-    
   } catch (err) {
     console.log( err )
   }

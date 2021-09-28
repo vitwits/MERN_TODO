@@ -41,6 +41,17 @@ const MainPage = () => {
     }
   }, [text, userId, todos, getTodo])
   
+  const removeTodos = useCallback(async (id) => {
+    try {
+    await axios.delete(`/api/todo/delete/${id}`, {id}, {
+      headers: {'Content-Type': 'application/json'}
+    })
+      .then(() => getTodo())
+    } catch (err) {
+      console.log(err)
+    }
+  })
+  
   useEffect(() => {
     getTodo()
   }, [getTodo])
@@ -82,7 +93,7 @@ const MainPage = () => {
                   <div className="todos-buttons col">
                     <i className="material-icons teal-text">check</i>
                     <i className="material-icons orange-text">warning</i>
-                    <i className="material-icons red-text">delete</i>
+                    <i className="material-icons red-text" onClick={() => removeTodos(todo._id)}>delete</i>
                   </div>
                 </div>
               )
